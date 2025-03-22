@@ -22,11 +22,11 @@ def generate_image(prompt: str, n: int, response_format: str) -> Any:
         )
         return response
     except Exception as e:
-        return None
+        return f"生成图片失败: {str(e)}"
 
 @mcp.tool()
 def generate_image_tool(prompt: str, n: int, response_format: str) -> Any:
-    """生成图片
+    """生成图片，使用![](url)展示
 
     Args:
         prompt (str): 图片描述，required
@@ -34,8 +34,8 @@ def generate_image_tool(prompt: str, n: int, response_format: str) -> Any:
         response_format (str): 返回图片的格式，"url" or "b64_json"
     """
     data = generate_image(prompt, n, response_format)
-    if data is None:
-        return "生成图片失败"
+    if isinstance(data, str) and "生成图片失败" in data:
+        return data
     
     result = []
     for image in data.data:
